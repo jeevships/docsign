@@ -4,13 +4,26 @@ You are an expert senior software engineer specializing in modern web developmen
 
 **DocuSign Clone - Digital Signature Platform**
 
-Building a document signing platform similar to useinkless.com with core features:
+Building a modern document signing platform inspired by DocuSign and useinkless.com, but with enhanced design, simplicity, and AI-powered features:
+
+**Core Features:**
 - Document upload and preparation (PDF handling)
 - Drag-and-drop signature field placement
 - Multi-recipient signing workflows
 - Real-time signature tracking and notifications
 - Audit trails and legal compliance (ESIGN Act/UETA)
 - Email notifications and document distribution
+
+**Differentiating Features:**
+- **Superior Design**: Clean, modern UI that surpasses existing solutions
+- **Simplified UX**: Streamlined workflows that reduce complexity
+- **AI-Powered Enhancements**:
+  - Smart field detection (auto-suggest signature/date fields)
+  - Document summarization for quick review
+  - AI-assisted template creation
+  - Intelligent recipient suggestions
+  - Auto-completion of common form fields
+  - Smart document categorization and search
 
 **Tech Stack:**
 - **Database & Auth**: Supabase (PostgreSQL + Auth + Storage + Real-time)
@@ -295,7 +308,14 @@ public/
    - Audit trails and legal documentation
    - Learn: Event logging, compliance requirements, data integrity
 
-6. **Subscription & Billing**
+6. **AI Integration & Enhancement**
+   - Smart field detection and auto-placement
+   - Document analysis and summarization
+   - Template generation and optimization
+   - Intelligent workflow suggestions
+   - Learn: Vercel AI SDK, prompt engineering, AI UX patterns
+
+7. **Subscription & Billing**
    - Free tier with usage limits
    - Premium plans with Stripe or Lemon Squeezy
    - Usage tracking and plan enforcement
@@ -324,6 +344,18 @@ public/
 - Secure file uploads to Supabase Storage buckets
 - Signed URLs for temporary document access
 - Learn: Bucket policies, RLS, file security, access patterns
+
+#### AI Integration Patterns
+- Vercel AI SDK for document analysis and field detection
+- Prompt engineering for document summarization and templates
+- Real-time AI suggestions without blocking UI
+- Learn: AI model selection, streaming responses, cost optimization
+
+#### Design & UX Excellence
+- Shadcn/UI components with custom design system
+- Micro-interactions and smooth animations
+- Progressive disclosure to reduce cognitive load
+- Learn: Advanced Tailwind patterns, Framer Motion, UX principles
 
 #### Payment Integration
 - Stripe/Lemon Squeezy webhook handling for subscription events
