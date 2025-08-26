@@ -2,6 +2,32 @@ You are an expert senior software engineer specializing in modern web developmen
 
 ## Project Context
 
+**DocuSign Clone - Digital Signature Platform**
+
+Building a document signing platform similar to useinkless.com with core features:
+- Document upload and preparation (PDF handling)
+- Drag-and-drop signature field placement
+- Multi-recipient signing workflows
+- Real-time signature tracking and notifications
+- Audit trails and legal compliance (ESIGN Act/UETA)
+- Email notifications and document distribution
+
+**Tech Stack:**
+- **Database & Auth**: Supabase (PostgreSQL + Auth + Storage + Real-time)
+- **Payments**: Stripe or Lemon Squeezy for subscription billing
+- **File Storage**: Supabase Storage for PDF documents
+- **Real-time**: Supabase Real-time subscriptions for live updates
+
+**Learning-Focused Development Approach**
+
+This is a learning project emphasizing understanding over speed:
+- Explain the "why" behind architectural decisions
+- Break down complex features into learning modules
+- Provide detailed code comments for educational purposes
+- Document patterns and best practices as we build
+- Focus on fundamentals: authentication, file handling, database design
+- Test each feature thoroughly to understand edge cases
+
 See @package.json for available npm scripts and project dependencies.
 
 ## Analysis Process
@@ -235,6 +261,139 @@ styles/
   globals.css           # Global Tailwind CSS
 public/
   icons/                # SVG icons and images
+```
+
+## DocuSign Clone Specific Guidelines
+
+### Core Feature Implementation Priority
+
+1. **Authentication & User Management (Supabase Auth)**
+   - User registration, login, password reset with Supabase Auth
+   - Social login providers (Google, GitHub)
+   - Row Level Security (RLS) for data protection
+   - Learn: Supabase Auth patterns, JWT tokens, RLS policies
+
+2. **Document Management (Supabase Storage)**
+   - PDF upload to Supabase Storage with secure buckets
+   - Document preview and thumbnail generation
+   - File access control and signed URLs
+   - Learn: File handling, bucket policies, storage security
+
+3. **Signature Field System**
+   - Drag-and-drop field placement on PDF
+   - Field types: signature, text, date, checkbox
+   - Learn: Canvas API, coordinate systems, responsive positioning
+
+4. **Signing Workflow**
+   - Send documents to recipients
+   - Signing interface and validation
+   - Document completion and distribution
+   - Learn: State machines, email integration, workflow management
+
+5. **Tracking & Compliance**
+   - Real-time status updates with Supabase Real-time
+   - Audit trails and legal documentation
+   - Learn: Event logging, compliance requirements, data integrity
+
+6. **Subscription & Billing**
+   - Free tier with usage limits
+   - Premium plans with Stripe or Lemon Squeezy
+   - Usage tracking and plan enforcement
+   - Learn: Subscription billing, webhooks, usage metering
+
+### Key Technical Patterns for Learning
+
+#### PDF Processing
+- Use PDF-lib for client-side PDF manipulation
+- Implement proper error handling for corrupt files
+- Learn coordinate mapping between PDF and screen coordinates
+
+#### Supabase Database Design
+- Users (auth.users), Documents, SignatureFields, SigningRequests, AuditLogs tables
+- Supabase Row Level Security (RLS) policies for access control
+- Database relationships and foreign keys with PostgreSQL
+- Learn: SQL, RLS policies, database normalization, indexing
+
+#### Supabase Real-time Updates
+- Real-time subscriptions for document status changes
+- Optimistic UI updates with Supabase real-time
+- Learn: WebSocket connections, event-driven architecture, optimistic updates
+
+#### Supabase Security & Storage
+- RLS policies ensure users only access their documents
+- Secure file uploads to Supabase Storage buckets
+- Signed URLs for temporary document access
+- Learn: Bucket policies, RLS, file security, access patterns
+
+#### Payment Integration
+- Stripe/Lemon Squeezy webhook handling for subscription events
+- Usage tracking and plan limits enforcement
+- Subscription status synchronization with Supabase
+- Learn: Webhook security, subscription lifecycle, usage metering
+
+### Learning Milestones
+
+Each feature should include:
+- **Planning Phase**: Database schema, API endpoints, UI mockups
+- **Implementation**: Step-by-step coding with explanations
+- **Testing**: Unit tests, integration tests, manual testing scenarios
+- **Reflection**: What was learned, what could be improved
+
+### Educational Code Comments
+
+Include detailed comments explaining patterns:
+```typescript
+// WHY: Supabase real-time gives us live updates across all connected clients
+// HOW: Subscribe to table changes and update React state
+// LEARN: This replaces polling and provides better UX than traditional REST APIs
+const useDocumentSubscription = (userId: string) => {
+  const [documents, setDocuments] = useState<Document[]>([])
+  
+  useEffect(() => {
+    // Create real-time subscription for user's documents
+    const subscription = supabase
+      .channel('documents')
+      .on(
+        'postgres_changes',
+        {
+          event: '*', // Listen to all changes (INSERT, UPDATE, DELETE)
+          schema: 'public',
+          table: 'documents',
+          filter: `user_id=eq.${userId}` // Only get current user's documents
+        },
+        (payload) => {
+          // WHY: Handle different change types to keep UI in sync
+          handleDocumentChange(payload)
+        }
+      )
+      .subscribe()
+    
+    return () => {
+      supabase.removeChannel(subscription)
+    }
+  }, [userId])
+  
+  return documents
+}
+```
+
+```typescript
+// WHY: RLS policies protect data at the database level, not just in the app
+// HOW: Supabase automatically applies these rules to all queries
+// LEARN: This prevents data leaks even if frontend code has bugs
+CREATE POLICY "Users can only see their own documents" ON documents
+  FOR ALL USING (auth.uid() = user_id);
+
+// WHY: Signed URLs provide temporary, secure access to private files
+// HOW: Generate time-limited URLs that don't expose permanent file paths
+// LEARN: This is how modern apps handle secure file sharing
+const getDocumentUrl = async (documentPath: string) => {
+  const { data } = await supabase.storage
+    .from('documents')
+    .createSignedUrl(documentPath, 3600) // 1 hour expiry
+  
+  return data?.signedUrl
+}
 ```
 
 ## Available Scripts
