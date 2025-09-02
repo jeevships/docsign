@@ -1,54 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/auth-context'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { LoginForm } from '@/components/auth/LoginForm'
+import { SignUpForm } from '@/components/auth/SignUpForm'
 
 export default function Home() {
   const { user, loading: authLoading, signOut } = useAuth()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState('')
-
-  const handleSignUp = async () => {
-    setLoading(true)
-    setMessage('')
-    
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    })
-    
-    if (error) {
-      setMessage(`Error: ${error.message}`)
-    } else {
-      setMessage('Success! Check your email for confirmation.')
-    }
-    
-    setLoading(false)
-  }
-
-  const handleSignIn = async () => {
-    setLoading(true)
-    setMessage('')
-    
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-    
-    if (error) {
-      setMessage(`Error: ${error.message}`)
-    } else {
-      setMessage('Signed in successfully!')
-    }
-    
-    setLoading(false)
-  }
+  const [showSignUp, setShowSignUp] = useState(false)
 
   // Show loading state
   if (authLoading) {
@@ -95,45 +56,29 @@ export default function Home() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-center">DocSign - Test Auth</CardTitle>
+          <CardTitle className="text-center">
+            {showSignUp ? 'Sign Up for DocSign' : 'Sign In to DocSign'}
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          {showSignUp ? (
+            <SignUpForm />
+          ) : (
+            <LoginForm />
+          )}
           
-          <div className="flex gap-2">
+          <div className="text-center">
             <Button 
-              onClick={handleSignUp} 
-              disabled={loading}
-              variant="outline"
-              className="flex-1"
+              variant="ghost" 
+              onClick={() => setShowSignUp(!showSignUp)}
+              className="text-sm"
             >
-              Sign Up
-            </Button>
-            <Button 
-              onClick={handleSignIn} 
-              disabled={loading}
-              className="flex-1"
-            >
-              Sign In
+              {showSignUp 
+                ? 'Already have an account? Sign in' 
+                : "Don't have an account? Sign up"
+              }
             </Button>
           </div>
-          
-          {message && (
-            <p className={`text-sm ${message.includes('Error') ? 'text-red-600' : 'text-green-600'}`}>
-              {message}
-            </p>
-          )}
         </CardContent>
       </Card>
     </div>
