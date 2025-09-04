@@ -9,7 +9,7 @@ import { LoginForm } from '@/components/auth/LoginForm'
 import { SignUpForm } from '@/components/auth/SignUpForm'
 
 export default function Home() {
-  const { user, loading: authLoading } = useAuth()
+  const { user, loading: authLoading, signOut } = useAuth()
   const [showSignUp, setShowSignUp] = useState(false)
   const router = useRouter()
 
@@ -42,8 +42,8 @@ export default function Home() {
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               Hello, {user?.email}! You're now in your dashboard.
             </p>
-            <Button onClick={() => {}} variant="outline">
-              Sign Out (will add functionality)
+            <Button onClick={signOut} variant="outline">
+              Sign Out
             </Button>
           </CardContent>
         </Card>
